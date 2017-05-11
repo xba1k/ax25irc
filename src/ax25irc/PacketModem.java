@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package ax25irc;
 
 import ax25irc.aprs.parser.APRSPacket;
@@ -10,10 +5,6 @@ import ax25irc.aprs.parser.Parser;
 import ax25irc.ax25modem.sivantoledo.ax25.Packet;
 import ax25irc.ax25modem.sivantoledo.ax25.PacketHandler;
 
-/**
- *
- * @author alex
- */
 public class PacketModem extends Thread implements PacketHandler {
 
     AX25PacketListener listener;

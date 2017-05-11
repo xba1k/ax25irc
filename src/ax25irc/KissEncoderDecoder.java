@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package ax25irc;
 
 import ax25irc.aprs.parser.APRSPacket;
@@ -20,10 +15,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Enumeration;
 
-/**
- *
- * @author alex
- */
 public class KissEncoderDecoder extends PacketModem implements KissFrameListener {
 
     SerialPort serialPort;

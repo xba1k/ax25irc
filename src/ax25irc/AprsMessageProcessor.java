@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package ax25irc;
 
 import ax25irc.aprs.parser.APRSPacket;
@@ -23,10 +18,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- *
- * @author alex
- */
 public class AprsMessageProcessor implements MessageListener {
 
     IRCServer server;
@@ -236,6 +227,12 @@ public class AprsMessageProcessor implements MessageListener {
 	    case T_THIRDPARTY:
 		message.append("3rd party ");
 		message.append(new String(p.toString()));
+                
+                // BALDPK>APRS:}N7TNG-1>APMI06,TCPIP,BALDPK*:@060639z4538.30N/12240.53W-WX3in1Plus2.0 U=12.5V,T=7.8C/46.0F
+                // BALDPK>APRS:}WB7QAZ-10>APMI06,TCPIP,BALDPK*:@060637z4516.50N/12237.80W_271/000g000t046r000p015P015h97b10192Canby WX
+                
+               
+                
 		break;
 	    case T_QUERY:
 		message.append("query ");
