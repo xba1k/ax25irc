@@ -28,17 +28,18 @@ here : http://jlog.org/rxtx-mac.html.
 Three application modes are available :
 
 1. stdin
-...AX25 packets are decoded from audio stream via standard input. This mode can be used
+
+   AX25 packets are decoded from audio stream via standard input. This mode can be used
 with RTL-SDR via rtl_fm as demonstrated in provided run.sh script.
 
 2. rtlfm
 
-...Application will directly invoke rtl_fm via shell. This mode will not work on Windows.
+   Application will directly invoke rtl_fm via shell. This mode will not work on Windows.
 Invoke as **java -jar dist/Ax25Irc.jar rtlfm**.
 
 3. kiss
 
-...Application will attempt to open a serial port for communication with a KISS compatible
+   Application will attempt to open a serial port for communication with a KISS compatible
 TNC. Invoke as  **java -jar dist/Ax25Irc.jar kiss <path to serial port>**
 
 ## Use
