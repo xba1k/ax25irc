@@ -29,15 +29,17 @@ Three application modes are available :
 
 1. stdin
 ...AX25 packets are decoded from audio stream via standard input. This mode can be used
-...with RTL-SDR via rtl_fm as demonstrated in provided run.sh script.
+with RTL-SDR via rtl_fm as demonstrated in provided run.sh script.
 
 2. rtlfm
+
 ...Application will directly invoke rtl_fm via shell. This mode will not work on Windows.
-...Invoke as *java -jar dist/Ax25Irc.jar rtlfm*.
+Invoke as **java -jar dist/Ax25Irc.jar rtlfm**.
 
 3. kiss
+
 ...Application will attempt to open a serial port for communication with a KISS compatible
-...TNC. Invoke as  *java -jar dist/Ax25Irc.jar kiss <path to serial port>*
+TNC. Invoke as  **java -jar dist/Ax25Irc.jar kiss <path to serial port>**
 
 ## Use
 
@@ -49,8 +51,8 @@ Once connected, users can join one or several of the pre-populated channels :
 
 * #APRS - displays all received APRS packets in decoded form. Posting to channel has no effect.
 * #APRS-RAW - displays received APRS packets in raw form. Posting to channel has no effect.
-* #APRS-CHAT - channel will display APRS Message packets when target callsign is 1 character
-... long. Posting to channel will transmit APRS Message to target callsign "A".
+* #APRS-CHAT - channel will display APRS Message packets when target callsign is 1 character long.
+Posting to channel will transmit APRS Message to target callsign "A".
 * #AX25-CHAT - channel displays non-APRS AX25 payloads.
 * #CONTROL - channel for manipulating runtime configuration.
 
