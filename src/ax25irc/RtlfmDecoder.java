@@ -22,10 +22,13 @@ import ax25irc.ax25modem.sivantoledo.ax25.Packet;
 import ax25irc.ax25modem.sivantoledo.ax25.PacketHandler;
 import ax25irc.ax25modem.sivantoledo.soundcard.SoundcardConsumer;
 import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 
 public class RtlfmDecoder extends PacketModem {
 
-    public static String CMD = "rtl_fm -f 144390000 -s 22050 -o 4 -g 100 -C -";
+    public static String CMD = "rtl_fm -f 144390000 -s 22050 -o 4 -g 100 -";
+    private String OS_NAME = System.getProperty("os.name");
 
     private SoundcardConsumer consumer;
     private byte[] capture_buffer;
@@ -43,7 +46,8 @@ public class RtlfmDecoder extends PacketModem {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-
+        
+        
     }
 
     public void receive(InputStream in) throws IOException {
@@ -87,12 +91,32 @@ public class RtlfmDecoder extends PacketModem {
 
         try {
 
-            Process p = new ProcessBuilder().command("/bin/sh", "-c", CMD).start();
+            Process p = null;
+            
+            if(OS_NAME.contains("win")) {
+
+                p = new ProcessBuilder().command("cmd", "/c", CMD).start();
+                
+            } else {
+            
+               p = new ProcessBuilder().command("sh", "-c", CMD).start();
+                
+            }
 
             Thread.sleep(2000);
 
             if (p.isAlive()) {
                 receive(p.getInputStream());
+            } else {
+
+                BufferedReader br = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+                String line;
+                while ((line = br.readLine()) != null) {
+                    System.out.println(line);
+                }
+                
+                System.out.println("PATH: "+System.getenv().get("PATH"));
+                
             }
 
             System.out.println("Command terminated with code " + p.waitFor());
