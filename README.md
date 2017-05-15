@@ -34,13 +34,14 @@ with RTL-SDR via rtl_fm as demonstrated in provided run.sh script.
 
 2. rtlfm
 
-   Application will directly invoke rtl_fm via shell. This mode will not work on Windows.
+   Application will directly invoke rtl_fm via shell. This mode will not work on Windows.  
 Invoke as **java -jar dist/Ax25Irc.jar rtlfm**.
 
 3. kiss
 
    Application will attempt to open a serial port for communication with a KISS compatible
-TNC. Invoke as  **java -jar dist/Ax25Irc.jar kiss <path to serial port>**
+TNC.  
+Invoke as  **java -jar dist/Ax25Irc.jar kiss <path to serial port>**
 
 ## Use
 
@@ -59,3 +60,8 @@ Posting to channel will transmit APRS Message to target callsign "A".
 
 In addition, direct messages sent to any callsign will be sent as APRS Messages,
 unless global mode is set to AX25.
+
+## Screenshots
+
+![#APRS screenshot](https://github.com/xba1k/ax25irc/#APRS%20screenshot.png)
+![#APRS-RAW screenshot](https://github.com/xba1k/ax25irc/#APRS-RAW%20screenshot.png)
