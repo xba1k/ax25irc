@@ -63,5 +63,5 @@ unless global mode is set to AX25.
 
 ## Screenshots
 
-![#APRS screenshot](https://github.com/xba1k/ax25irc/#APRS%20screenshot.png)
-![#APRS-RAW screenshot](https://github.com/xba1k/ax25irc/#APRS-RAW%20screenshot.png)
+![#APRS screenshot](https://github.com/xba1k/ax25irc/blob/master/%23APRS%20screenshot.png)
+![#APRS-RAW screenshot](https://github.com/xba1k/ax25irc/blob/master/%23APRS-RAW%20screenshot.png)
