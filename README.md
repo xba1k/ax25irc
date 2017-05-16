@@ -41,7 +41,7 @@ Invoke as **java -jar dist/Ax25Irc.jar rtlfm**.
 
    Application will attempt to open a serial port for communication with a KISS compatible
 TNC.  
-Invoke as  **java -jar dist/Ax25Irc.jar kiss <path to serial port>**
+Invoke as  **java -jar dist/Ax25Irc.jar kiss &lt;path to serial port&gt;**
 
 ## Use
 
