@@ -82,38 +82,23 @@ public class AprsMessageProcessor implements MessageListener {
                     destination = "A";
                 }
 
-                MessagePacket mp = new MessagePacket(destination, messagebody, "");
-
-                APRSPacket packet = new APRSPacket(message.getConnection().getNick(), targetCallsign, destination.length() == 1 ? Arrays.asList(groupDigis) : Arrays.asList(directDigis), mp);
-
-                byte[] frame = packet.toAX25Frame();
-
-                modem.sendPacket(frame);
-                /*                
-		System.out.println(packet);
-                
-                for(int i = 0; i < frame.length; i++) {
+                if (messagebody.startsWith("\001DCC SEND")) {
                     
-                    int c = frame[i] & 255;
-                    
-                    if(c >= 32 && c <= 126) {
-                        System.out.print((char)c);
-                    } else {
-                        System.out.print("<"+c+">");
-                    }
-                    
+                    DCCFileTransfer transfer = new DCCFileTransfer(modem, message.getConnection().getNick(), destination, message.getConnection().getIpAddr(), messagebody.substring(1, messagebody.length()-1));
+                    transfer.start();
+
+                } else {
+
+                    MessagePacket mp = new MessagePacket(destination, messagebody, "");
+
+                    APRSPacket packet = new APRSPacket(message.getConnection().getNick(), targetCallsign, destination.length() == 1 ? Arrays.asList(groupDigis) : Arrays.asList(directDigis), mp);
+
+                    byte[] frame = packet.toAX25Frame();
+
+                    modem.sendPacket(frame);
+
                 }
-                
-                System.out.println("");
-                
-                try {
-                
-                    System.out.println(Parser.parseAX25(frame).toString());
-                    
-                } catch(Exception ex) {
-                    ex.printStackTrace();
-                }
-                 */
+
             }
 
         }

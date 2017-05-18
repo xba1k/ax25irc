@@ -84,6 +84,9 @@ public class AX25Irc extends Thread implements AX25PacketListener, MessageListen
             case APRS:
                 aprsMessageProcessor.process((AX25APRSPacket) packet);
                 break;
+            case AX25FileTransfer:
+                ax25MessageProcessor.process((AX25FileTransfer) packet);
+                break;
 
         }
 

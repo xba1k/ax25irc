@@ -10,7 +10,8 @@ public class AX25Packet {
         
         OTHER,
         APRS,
-        AX25Chat
+        AX25Chat,
+        AX25FileTransfer
         
     };
 

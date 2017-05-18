@@ -20,7 +20,17 @@ public class PacketModem extends Thread implements PacketHandler {
 
         if (pkt.payload[0] == '^') {
 
-            listener.onPacket(new AX25ChatPacket(pkt));
+            switch (pkt.payload[1]) {
+
+                case ' ':
+                    listener.onPacket(new AX25ChatPacket(pkt));
+                    break;
+                case '1':
+                case '2':
+                    listener.onPacket(new AX25FileTransfer(pkt));
+                    break;
+
+            }
 
         } else {
 
@@ -52,7 +62,7 @@ public class PacketModem extends Thread implements PacketHandler {
             }
 
         }
-        
+
         System.out.println();
 
     }

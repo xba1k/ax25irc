@@ -48,7 +48,7 @@ public class ServMessage
     @Override
     public String toString()
     {
-        return ((m_prefix.isEmpty() ? "" : ":") + m_prefix + " " + m_command + " " + getParametersAsString()).trim() + "\r\n";
+        return ((m_prefix.isEmpty() ? "" : ":") + m_prefix + " " + m_command + " " + getParametersAsString()).replaceAll(" $", "").replaceAll("^ ","") + "\r\n";
     }
 
     public String getPrefix()
@@ -75,7 +75,7 @@ public class ServMessage
             parameters += (p.contains(" ") && !p.startsWith(":") ? ":" : "") + p + " ";
         }
 
-        return parameters.trim();
+        return parameters.replaceAll(" $", "");
     }
     
     public String getText() {

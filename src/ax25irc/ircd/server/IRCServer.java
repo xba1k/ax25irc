@@ -238,7 +238,7 @@ public class IRCServer extends VarMap implements Runnable {
 		    /* Send a PING request between intervals */
 		    int pingtime = getInteger("cPingTime");
 		    if (client.getPingTimer() >= pingtime && client.getPingTimer() % (pingtime / 10) == 0) {
-			c.sendMsgAndFlush(new ServMessage("", "PING", c.getNick()));
+			c.sendMsgAndFlush(new ServMessage("", "PING", this.getHost().getHostName()));
 		    }
 
 		    client.updateIdentifiedClient();
