@@ -3,19 +3,16 @@ package ax25irc;
 import ax25irc.ax25modem.sivantoledo.ax25.Packet;
 import ax25irc.ircd.server.IRCServer;
 import ax25irc.ircd.server.Client;
-import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class DCCFileTransfer extends Thread {
-
+    
     private PacketModem modem;
     private IRCServer server;
     private String src, dest, filename, ip;
@@ -24,6 +21,8 @@ public class DCCFileTransfer extends Thread {
     private byte buf[] = new byte[BUFSIZ];
 
     public static int BUFSIZ = 252;
+    public static String FILE_TRANSFER_INFO_HEADER = "^1";
+    public static String FILE_TRANSFER_DATA_HEADER = "^2";
 
     private boolean senderMode = false;
     private boolean done = false;
@@ -44,7 +43,7 @@ public class DCCFileTransfer extends Thread {
         filename = params[2].replaceAll("^\"", "").replaceAll("\"$", "");
         port = Integer.parseInt(params[4]);
         size = params.length == 6 ? Integer.parseInt(params[5]) : 0;
-
+        
     }
 
     public DCCFileTransfer(IRCServer server, String src, String dest, Packet packet) {
@@ -133,12 +132,12 @@ public class DCCFileTransfer extends Thread {
             int bytesProcessed = 0;
 
             while (bytesProcessed < size && !isInterrupted()) {
-
+                
                 Packet packet = pendingPackets.take();
-                ByteBuffer ob = ByteBuffer.wrap(packet.payload, 2, packet.payload.length - 2);
+                int dataLength = packet.payload.length - 2;
 
-                os.write(ob.array());
-                bytesProcessed += ob.limit();
+                os.write(packet.payload, 2, dataLength);
+                bytesProcessed += dataLength;
 
                 is.read(new byte[4]);
 
@@ -171,32 +170,36 @@ public class DCCFileTransfer extends Thread {
             int bytesSent = 0;
             Packet packet = null;
 
-            payload.put("^1".getBytes());
+            payload.put(FILE_TRANSFER_INFO_HEADER.getBytes());
             payload.put((byte) filename.length());
             payload.put(filename.getBytes());
             payload.putInt(size);
 
             packet = new Packet(dest, src, new String[]{}, Packet.AX25_CONTROL_APRS, Packet.AX25_PROTOCOL_NO_LAYER_3, Arrays.copyOfRange(payload.array(), 0, payload.position()));
-            modem.sendPacket(packet.bytesWithoutCRC());
+            
+            byte[] packetBytes = packet.bytesWithoutCRC();
+            modem.sendPacket(packetBytes);
 
-            Thread.sleep(2000);
+            Thread.sleep(2000 + packetBytes.length*8000/1200); // 2 seconds + packet send time at 1200bps
 
             while ((len = is.read(buf)) > 0) {
 
                 payload.rewind();
-                payload.put("^2".getBytes());
+                payload.put(FILE_TRANSFER_DATA_HEADER.getBytes());
                 payload.put(buf, 0, len);
 
                 packet = new Packet(dest, src, new String[]{}, Packet.AX25_CONTROL_APRS, Packet.AX25_PROTOCOL_NO_LAYER_3, Arrays.copyOfRange(payload.array(), 0, payload.position()));
-                modem.sendPacket(packet.bytesWithoutCRC());
+      
+                packetBytes = packet.bytesWithoutCRC();
+                modem.sendPacket(packetBytes);
 
                 lbuf.putInt(len);
-                //    os.write(lbuf.array());
+                // we're supposed to write back number of bytes 'received', but this doesn't seem to work with Pidgin
+                // os.write(lbuf.array()); 
                 lbuf.rewind();
-
                 bytesSent += len;
 
-                Thread.sleep(2000);
+                Thread.sleep(2000 + packetBytes.length*8000/1200);
 
             }
 

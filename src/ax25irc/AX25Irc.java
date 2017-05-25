@@ -4,10 +4,8 @@ import ax25irc.ircd.server.MessageListener;
 import ax25irc.ircd.server.Channel;
 import ax25irc.ircd.server.Client;
 import ax25irc.ircd.server.ClientConnectionListener;
-import ax25irc.ircd.server.ConnState;
 import ax25irc.ircd.server.IRCServer;
 import ax25irc.ircd.server.ServMessage;
-import java.io.IOException;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -72,7 +70,6 @@ public class AX25Irc extends Thread implements AX25PacketListener, MessageListen
 
     public void onPacket(AX25Packet packet) {
 
-//	System.out.println("got a packet: "+packet.toString());
         switch (packet.getType()) {
 
             case OTHER:
@@ -97,12 +94,7 @@ public class AX25Irc extends Thread implements AX25PacketListener, MessageListen
     }
     
     public void onClient(Client client) {
-        
-        System.out.println("Client connect :"+client.toString());
-        
         client.addListener(this);
-        
-        
     }
     public void onMessage(ServMessage message) {
         
@@ -209,6 +201,11 @@ public class AX25Irc extends Thread implements AX25PacketListener, MessageListen
     }
 
     public static void main(String[] args) {
+        
+        if(args.length == 0) {
+            System.out.println("Specify mode : kiss|stdin|rtlfm");
+            return;
+        }
 
         try {
 
@@ -234,22 +231,6 @@ public class AX25Irc extends Thread implements AX25PacketListener, MessageListen
             aprs2Irc.process();
 
         } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-
-    }
-
-    public void enableRawTerm() {
-
-        String[] cmd = {"/bin/sh", "-c", "stty raw </dev/tty"};
-
-        try {
-
-            Runtime.getRuntime().exec(cmd).waitFor();
-
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        } catch (InterruptedException ex) {
             ex.printStackTrace();
         }
 

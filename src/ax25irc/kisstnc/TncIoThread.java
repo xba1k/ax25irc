@@ -78,11 +78,16 @@ public class TncIoThread extends Thread {
     
     private KissFrame readFrame() throws IOException {
         KissFrame ret = null;
-        byte[] buf = new byte[1000];
+        byte[] buf = new byte[10000];
         int avail = iStream.available();
         if (avail == 0) {
             return null;
         }
+        
+        if(avail > buf.length) {
+            avail = buf.length;
+        }
+        
         int read = iStream.read(buf,0, avail);
         
         if (read == 0) {

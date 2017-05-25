@@ -5,7 +5,6 @@ import ax25irc.aprs.parser.APRSTypes;
 import ax25irc.aprs.parser.Digipeater;
 import ax25irc.aprs.parser.MessagePacket;
 import ax25irc.aprs.parser.ObjectPacket;
-import ax25irc.aprs.parser.Parser;
 import ax25irc.aprs.parser.PositionPacket;
 import ax25irc.aprs.parser.Position;
 import ax25irc.aprs.parser.SymbolDescription;
@@ -14,7 +13,8 @@ import ax25irc.ircd.server.Client;
 import ax25irc.ircd.server.IRCServer;
 import ax25irc.ircd.server.MessageListener;
 import ax25irc.ircd.server.ServMessage;
-import java.util.ArrayList;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.Arrays;
 import java.util.List;
 
@@ -30,6 +30,8 @@ public class AprsMessageProcessor implements MessageListener {
     double baseLatitude = 45.52;
     double baseLongitude = -122.681944;
     String baseLocationName = "Portland, OR";
+    
+    NumberFormat positionFormatter = new DecimalFormat("##0.00000");     
 
     public double getBaseLatitude() {
         return baseLatitude;
@@ -73,7 +75,6 @@ public class AprsMessageProcessor implements MessageListener {
             List<String> params = message.getParameters();
 
             if (message.getCommand().equals("PRIVMSG")) {
-                //System.out.println("New APRS Message from "+message.getConnection().getHostName()+" :"+message);
 
                 String destination = params.get(0);
                 String messagebody = message.getText();
@@ -84,17 +85,18 @@ public class AprsMessageProcessor implements MessageListener {
 
                 if (messagebody.startsWith("\001DCC SEND")) {
                     
+                    if(server.getHost().getHostName().equalsIgnoreCase(destination)) {
+                        destination = "A";
+                    }
+                    
                     DCCFileTransfer transfer = new DCCFileTransfer(modem, message.getConnection().getNick(), destination, message.getConnection().getIpAddr(), messagebody.substring(1, messagebody.length()-1));
                     transfer.start();
 
                 } else {
 
                     MessagePacket mp = new MessagePacket(destination, messagebody, "");
-
                     APRSPacket packet = new APRSPacket(message.getConnection().getNick(), targetCallsign, destination.length() == 1 ? Arrays.asList(groupDigis) : Arrays.asList(directDigis), mp);
-
                     byte[] frame = packet.toAX25Frame();
-
                     modem.sendPacket(frame);
 
                 }
@@ -186,7 +188,6 @@ public class AprsMessageProcessor implements MessageListener {
                 PositionPacket pp = (PositionPacket) p.getAprsInformation();
 
                 message.append("position ");
-                message.append("source: " + pp.getPositionSource() + ", ");
 
                 Position pos = pp.getPosition();
 
@@ -194,15 +195,12 @@ public class AprsMessageProcessor implements MessageListener {
                     message.append("altitude: " + pos.getAltitude() + " ");
                 }
 
-                message.append("lat: " + pos.getLatitude() + ", ");
-                message.append("lon: " + pos.getLongitude() + ", ");
+                message.append("lat: " + positionFormatter.format(pos.getLatitude()) + ", ");
+                message.append("lon: " + positionFormatter.format(pos.getLongitude()) + ", ");
                 message.append("sym: " + SymbolDescription.decode(pos.getSymbolTable(), pos.getSymbolCode()) + ", ");
-                message.append("ts: " + pos.getTimestamp() + ", ");
-                //message.append("ambiguity: " + pos.getPositionAmbiguity() + ", ");
 
                 Position basePos = new Position(getBaseLatitude(), getBaseLongitude());
                 message.append("distance from " + getBaseLocationName() + ": " + Math.round(basePos.distance(pos)) + "Mi, bearing: " + basePos.bearing(pos) + ", ");
-
                 message.append("comment: " + pp.getComment());
 
             }
@@ -210,18 +208,18 @@ public class AprsMessageProcessor implements MessageListener {
             break;
             case T_WX:
                 message.append("weather ");
-                message.append(new String(p.toString()));
+                message.append(p.toString());
                 break;
             case T_THIRDPARTY:
                 message.append("3rd party ");
-                message.append(new String(p.toString()));
+                message.append(p.toString());
 
                 // BALDPK>APRS:}N7TNG-1>APMI06,TCPIP,BALDPK*:@060639z4538.30N/12240.53W-WX3in1Plus2.0 U=12.5V,T=7.8C/46.0F
                 // BALDPK>APRS:}WB7QAZ-10>APMI06,TCPIP,BALDPK*:@060637z4516.50N/12237.80W_271/000g000t046r000p015P015h97b10192Canby WX
                 break;
             case T_QUERY:
                 message.append("query ");
-                message.append(new String(p.toString()));
+                message.append(p.toString());
                 break;
             case T_OBJECT: {
                 ObjectPacket obj = (ObjectPacket) p.getAprsInformation();
@@ -234,14 +232,12 @@ public class AprsMessageProcessor implements MessageListener {
                     message.append("altitude: " + pos.getAltitude() + " ");
                 }
 
-                message.append("lat: " + pos.getLatitude() + " ");
-                message.append("lon: " + pos.getLongitude() + " ");
+                message.append("lat: " + positionFormatter.format(pos.getLatitude()) + " ");
+                message.append("lon: " + positionFormatter.format(pos.getLongitude()) + " ");
                 message.append("sym: " + SymbolDescription.decode(pos.getSymbolTable(), pos.getSymbolCode()) + ", ");
-                message.append("ts: " + pos.getTimestamp() + " ");
-
+ 
                 Position basePos = new Position(getBaseLatitude(), getBaseLongitude());
                 message.append("distance from " + getBaseLocationName() + ": " + Math.round(basePos.distance(pos)) + "Mi, bearing: " + basePos.bearing(pos) + ", ");
-
                 message.append("comment: " + obj.getComment());
 
             }
@@ -249,31 +245,31 @@ public class AprsMessageProcessor implements MessageListener {
             break;
             case T_ITEM:
                 message.append("item ");
-                message.append(new String(p.toString()));
+                message.append(p.toString());
                 break;
             case T_NORMAL:
                 message.append("normal ");
-                message.append(new String(p.toString()));
+                message.append(p.toString());
                 break;
             case T_KILL:
                 message.append("kill ");
-                message.append(new String(p.toString()));
+                message.append(p.toString());
                 break;
             case T_STATUS:
                 message.append("status ");
-                message.append(new String(p.toString()));
+                message.append(p.toString());
                 break;
             case T_STATCAPA:
                 message.append("statcapa ");
-                message.append(new String(p.toString()));
+                message.append(p.toString());
                 break;
             case T_TELEMETRY:
                 message.append("telemetry ");
-                message.append(new String(p.toString()));
+                message.append(p.toString());
                 break;
             case T_USERDEF:
                 message.append("userdef ");
-                message.append(new String(p.toString()));
+                message.append(p.toString());
                 break;
             case T_MESSAGE:
                 MessagePacket msg = (MessagePacket) p.getAprsInformation();

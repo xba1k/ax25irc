@@ -19,9 +19,8 @@ Currently RTL-SDR (receive only), Mobilinkd and TNC-X have been tested on Ubuntu
 You will need Java 8 (JDK) and Apache Ant to build this project. Simply run build.sh
 if you're on Linux or OSX, or run ant manually.
 
-This project depends on RXTX library to perform serial port communication with TNC.
-Ubuntu provides RXTX via standard package repository. OSX version is available
-here : http://jlog.org/rxtx-mac.html.
+The project depends on jSerialComm library for serial communication to KISS TNC.
+http://fazecast.github.io/jSerialComm/
 
 ## Run
 
@@ -53,13 +52,15 @@ Once connected, users can join one or several of the pre-populated channels :
 
 * #APRS - displays all received APRS packets in decoded form. Posting to channel has no effect.
 * #APRS-RAW - displays received APRS packets in raw form. Posting to channel has no effect.
-* #APRS-CHAT - channel will display APRS Message packets when target callsign is 1 character long.
-Posting to channel will transmit APRS Message to target callsign "A".
+* #APRS-CHAT - channel will display APRS Message packets when target call sign is 1 character long.
+Posting to channel will transmit APRS Message to target call sign "A".
 * #AX25-CHAT - channel displays non-APRS AX25 payloads.
 * #CONTROL - channel for manipulating runtime configuration.
 
-In addition, direct messages sent to any callsign will be sent as APRS Messages,
-unless global mode is set to AX25.
+In addition, direct messages sent to any call sign will be sent as APRS Messages,
+unless global mode is set to AX25. Note that call sign "A" for "round table" communication
+was chosen arbitrarily and can be replaced with any other string that is not a real
+call sign.
 
 ## Screenshots
 

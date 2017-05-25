@@ -105,16 +105,19 @@ public class AX25MessageProcessor implements MessageListener {
             List<String> params = message.getParameters();
 
             if (message.getCommand().equals("PRIVMSG")) {
-                //System.out.println("New AX25CHAT Message from " + message.getConnection().getHostName() + ": " + message);
 
                 String destination = params.get(0);
                 String messagebody = message.getText();
 
                 if (destination.startsWith("#")) {
-                    destination = "*";
+                    destination = "A";
                 }
 
                 if (messagebody.startsWith("\001DCC SEND")) {
+                    
+                    if(server.getHost().getHostName().equalsIgnoreCase(destination)) {
+                        destination = "A";
+                    }
 
                     DCCFileTransfer transfer = new DCCFileTransfer(modem, message.getConnection().getNick(), destination, message.getConnection().getIpAddr(), messagebody.substring(1, messagebody.length() - 1));
                     transfer.start();
@@ -122,9 +125,7 @@ public class AX25MessageProcessor implements MessageListener {
                 } else {
 
                     String header = "^ ";
-
                     Packet packet = new Packet(destination, message.getConnection().getNick(), new String[]{}, Packet.AX25_CONTROL_APRS, Packet.AX25_PROTOCOL_NO_LAYER_3, (header + messagebody).getBytes());
-
                     modem.sendPacket(packet.bytesWithoutCRC());
 
                 }
