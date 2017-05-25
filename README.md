@@ -12,7 +12,7 @@ ax25irc is not implemented from scratch. It combines following projects and libr
 * https://github.com/amishHammer/libkisstnc-java
 
 Those codebases have been merged into the project for ease of development.
-Currently RTL-SDR (receive only), Mobilinkd and TNC-X have been tested on Ubuntu and OSX.
+Currently RTL-SDR (receive only), Mobilinkd and TNC-X have been tested on Ubuntu, OSX and Windows.
 
 ## Build
 
