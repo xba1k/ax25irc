@@ -34,20 +34,20 @@ with RTL-SDR via rtl_fm as demonstrated in provided run.sh script.
 2. rtlfm
 
    Application will directly invoke rtl_fm via shell. This mode will not work on Windows.  
-Invoke as **java -jar dist/Ax25Irc.jar rtlfm**.  
+Invoke as **java -jar Ax25Irc.jar rtlfm**.  
 
 3. kiss
 
    Application will attempt to open a serial port for communication with a KISS compatible
 TNC.  
-Invoke as  **java -jar dist/Ax25Irc.jar kiss &lt;path to serial port&gt;**  
+Invoke as  **java -jar Ax25Irc.jar kiss &lt;path to serial port&gt;**  
 
 4. sound
 
    Application will process input/output on the standard sound device. Theoretically this
    can be used with any radio in VOX mode, but I have only tested this mode only for decoding
    so far. Also sound card naming might be OS-specific, this still needs to be verified on Ubuntu and Windows.  
-   Invoke as **java -jar dist/Ax25Irc.jar sound**  
+   Invoke as **java -jar Ax25Irc.jar sound**  
 
 ## Use
 
