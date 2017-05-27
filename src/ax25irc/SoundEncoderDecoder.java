@@ -20,6 +20,8 @@ public class SoundEncoderDecoder extends PacketModem {
     Soundcard soundcard;
     Afsk1200Modulator modulator;
     PacketDemodulator demodulator;
+    
+    String soundDeviceName;
 
     int rate = 22050;
     int latency_ms = 100;
@@ -29,9 +31,11 @@ public class SoundEncoderDecoder extends PacketModem {
     int FullDuplex = 0;
     int TXTail = 10;
 
-    public SoundEncoderDecoder(AX25PacketListener listener) {
+    public SoundEncoderDecoder(AX25PacketListener listener, String soundDeviceName) {
 
         super(listener);
+        
+        this.soundDeviceName = soundDeviceName;
 
     }
 
@@ -71,7 +75,7 @@ public class SoundEncoderDecoder extends PacketModem {
             modulator = new Afsk1200Modulator(rate);
             demodulator = new Afsk1200MultiDemodulator(rate, this);
             modulator.setTxDelay(TXDelay);
-            soundcard = new Soundcard(rate, "Default Audio Device", "Default Audio Device", latency_ms, demodulator, modulator);
+            soundcard = new Soundcard(rate, soundDeviceName, soundDeviceName, latency_ms, demodulator, modulator);
         } catch (Exception e) {
             System.err.println("Afsk1200 constructor exception: " + e.getMessage());
             System.exit(1);

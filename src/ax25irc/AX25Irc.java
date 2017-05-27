@@ -167,7 +167,7 @@ public class AX25Irc extends Thread implements AX25PacketListener, MessageListen
                 modem = new StdinDecoder(this);
                 break;
             case SOUND:
-                modem = new SoundEncoderDecoder(this);
+                modem = new SoundEncoderDecoder(this, extra);
                 break;
         }
 
