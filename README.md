@@ -24,7 +24,7 @@ http://fazecast.github.io/jSerialComm/
 
 ## Run
 
-Three application modes are available :
+Multiple application modes are available :
 
 1. stdin
 
@@ -46,7 +46,7 @@ Invoke as  **java -jar dist/Ax25Irc.jar kiss &lt;path to serial port&gt;**
 
    Application will process input/output on the standard sound device. Theoretically this
    can be used with any radio in VOX mode, but I have only tested this mode only for decoding
-   so far. Also sound card naming might be OS-specific, this still needs to be verified on Ubuntu and Windows.
+   so far. Also sound card naming might be OS-specific, this still needs to be verified on Ubuntu and Windows.  
    Invoke as **java -jar dist/Ax25Irc.jar sound**  
 
 ## Use
