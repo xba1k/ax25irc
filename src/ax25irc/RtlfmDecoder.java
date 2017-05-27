@@ -1,27 +1,11 @@
 package ax25irc;
 
-import ax25irc.ircd.server.CMDs;
-import ax25irc.ircd.server.Channel;
-import ax25irc.ircd.server.Client;
-import ax25irc.ircd.server.IRCServer;
-import ax25irc.ircd.server.ServMessage;
-import java.awt.Point;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import ax25irc.aprs.parser.APRSPacket;
-import ax25irc.aprs.parser.InformationField;
-import ax25irc.aprs.parser.MessagePacket;
-import ax25irc.aprs.parser.ObjectPacket;
-import ax25irc.aprs.parser.Parser;
-import ax25irc.aprs.parser.Position;
-import ax25irc.aprs.parser.PositionPacket;
 import ax25irc.ax25modem.sivantoledo.ax25.Afsk1200MultiDemodulator;
-import ax25irc.ax25modem.sivantoledo.ax25.Packet;
-import ax25irc.ax25modem.sivantoledo.ax25.PacketHandler;
 import ax25irc.ax25modem.sivantoledo.soundcard.SoundcardConsumer;
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 

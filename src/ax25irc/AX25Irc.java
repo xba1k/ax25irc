@@ -20,9 +20,10 @@ public class AX25Irc extends Thread implements AX25PacketListener, MessageListen
     public static enum RadioMode {
         KISS,
         RTL_FM,
-        STDIN
+        STDIN,
+        SOUND
     };
-    
+
     public static enum MessageMode {
 
         APRS,
@@ -39,15 +40,15 @@ public class AX25Irc extends Thread implements AX25PacketListener, MessageListen
     ControlCommandProcessor commandProcessor;
 
     PacketModem modem;
-    
+
     public AX25MessageProcessor getAX25MessageProcessor() {
         return ax25MessageProcessor;
     }
-    
+
     public AprsMessageProcessor getAprsMessageProcessor() {
         return aprsMessageProcessor;
     }
-    
+
     public void setExtra(String extra) {
         this.extra = extra;
     }
@@ -59,11 +60,11 @@ public class AX25Irc extends Thread implements AX25PacketListener, MessageListen
     public void setRadioMode(RadioMode mode) {
         this.radioMode = mode;
     }
-    
+
     public void setMessageMode(MessageMode mode) {
         this.messageMode = mode;
     }
-    
+
     public MessageMode getMessageMode() {
         return messageMode;
     }
@@ -88,27 +89,38 @@ public class AX25Irc extends Thread implements AX25PacketListener, MessageListen
         }
 
     }
-    
+
     public IRCServer getServer() {
         return server;
     }
-    
+
     public void onClient(Client client) {
         client.addListener(this);
     }
+
     public void onMessage(ServMessage message) {
-        
+
         String dest = message.getParameters().get(0);
-        
-        if(!dest.startsWith("#")) {
-            
+
+        if (!dest.startsWith("#")) {
+
             Client client = server.getClient(dest);
+
+            // only RF direct messages to virtual clients.
             
-            switch(messageMode) {
-                case APRS:aprsMessageProcessor.onMessage(message);break;
-                case AX25:ax25MessageProcessor.onMessage(message);break;
+            if (client == null || (client.getConnection() instanceof VirtualConnection)) {
+
+                switch (messageMode) {
+                    case APRS:
+                        aprsMessageProcessor.onMessage(message);
+                        break;
+                    case AX25:
+                        ax25MessageProcessor.onMessage(message);
+                        break;
+                }
+
             }
-            
+
         }
 
     }
@@ -131,14 +143,13 @@ public class AX25Irc extends Thread implements AX25PacketListener, MessageListen
         aprsChat.addListener(aprsMessageProcessor);
         ax25Chat.addListener(ax25MessageProcessor);
         controlChat.addListener(commandProcessor);
-        
 
         server.addChannel("#APRS-CHAT", aprsChat);
         server.addChannel("#AX25-CHAT", ax25Chat);
         server.addChannel("#CONTROL", controlChat);
 
         server.addClientConnectionListener(this);
-        
+
         messageMode = MessageMode.APRS;
 
     }
@@ -154,6 +165,9 @@ public class AX25Irc extends Thread implements AX25PacketListener, MessageListen
                 break;
             case STDIN:
                 modem = new StdinDecoder(this);
+                break;
+            case SOUND:
+                modem = new SoundEncoderDecoder(this);
                 break;
         }
 
@@ -201,34 +215,41 @@ public class AX25Irc extends Thread implements AX25PacketListener, MessageListen
     }
 
     public static void main(String[] args) {
-        
-        if(args.length == 0) {
+
+        if (args.length == 0) {
             System.out.println("Specify mode : kiss|stdin|rtlfm");
             return;
         }
 
         try {
 
-            AX25Irc aprs2Irc = new AX25Irc();
+            AX25Irc ax25irc = new AX25Irc();
 
             String mode = args[0];
 
             if ("kiss".equalsIgnoreCase(mode)) {
-                aprs2Irc.setRadioMode(RadioMode.KISS);
+                ax25irc.setRadioMode(RadioMode.KISS);
             } else if ("stdin".equalsIgnoreCase(mode)) {
-                aprs2Irc.setRadioMode(RadioMode.STDIN);
+                ax25irc.setRadioMode(RadioMode.STDIN);
+            } else if ("rtlfm".equalsIgnoreCase(mode)) {
+                ax25irc.setRadioMode(RadioMode.RTL_FM);
+            } else if ("sound".equalsIgnoreCase(mode)) {
+                ax25irc.setRadioMode(RadioMode.SOUND);
             } else {
-                aprs2Irc.setRadioMode(RadioMode.RTL_FM);
+
+                System.err.println("Uknown radio mode " + mode);
+                System.exit(1);
+
             }
 
             if (args.length == 2) {
-                aprs2Irc.setExtra(args[1]);
+                ax25irc.setExtra(args[1]);
             }
 
-            aprs2Irc.configureRadio();
-            aprs2Irc.configureServer();
-            aprs2Irc.start();
-            aprs2Irc.process();
+            ax25irc.configureRadio();
+            ax25irc.configureServer();
+            ax25irc.start();
+            ax25irc.process();
 
         } catch (Exception ex) {
             ex.printStackTrace();
