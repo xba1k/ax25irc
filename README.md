@@ -34,7 +34,7 @@ with RTL-SDR via rtl_fm as demonstrated in provided run.sh script.
 2. rtlfm
 
    Application will directly invoke rtl_fm via shell. This mode will not work on Windows.  
-Invoke as **java -jar Ax25Irc.jar rtlfm**.  
+Invoke as **java -jar Ax25Irc.jar rtlfm**  
 
 3. kiss
 
