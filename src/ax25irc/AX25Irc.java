@@ -217,7 +217,7 @@ public class AX25Irc extends Thread implements AX25PacketListener, MessageListen
     public static void main(String[] args) {
 
         if (args.length == 0) {
-            System.out.println("Specify mode : kiss|stdin|rtlfm");
+            System.out.println("Specify mode : kiss|stdin|rtlfm|sound");
             return;
         }
 
