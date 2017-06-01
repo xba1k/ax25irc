@@ -44,10 +44,13 @@ Invoke as  **java -jar Ax25Irc.jar kiss &lt;path to serial port&gt;**
 
 4. sound
 
-   Application will process input/output on the standard sound device. Theoretically this
-   can be used with any radio in VOX mode, but I have only tested this mode only for decoding
-   so far. Also sound card naming might be OS-specific, this still needs to be verified on Ubuntu and Windows.  
-   Invoke as **java -jar Ax25Irc.jar sound**  
+   Application will process input/output on the sound card device. Theoretically this
+   can be used with any radio in VOX mode, but I have only tested this mode for encoding/decoding
+   via microphone and speakers. Sound card naming is OS-specific, this works on OSX with "Default Audio Device" and on Ubuntu
+   with "default [default]". Still need to verify on Windows. Note that due to spaces sound device name needs
+   to be quoted. Also the application will print all detected sound devices, which should help in determining
+   the correct name.  
+   Invoke as **java -jar Ax25Irc.jar sound "sound device name"**  
 
 ## Use
 
