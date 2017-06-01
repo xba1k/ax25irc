@@ -212,7 +212,13 @@ public class APRSPacket implements Serializable {
 		byte[] dest = new Digipeater(destinationCall + "*").toAX25();
 		baos.write(dest, 0, dest.length);
 		// src
-		byte[] src = new Digipeater(sourceCall).toAX25();
+                
+                Digipeater srcDigi = new Digipeater(sourceCall);
+                
+                if(digipeaters.size() == 0)
+                    srcDigi.setLast(true);
+                
+		byte[] src = srcDigi.toAX25();
 		baos.write(src, 0, src.length);
 		// digipeater list
 		for (int i = 0; i < digipeaters.size(); i++) {

@@ -31,6 +31,7 @@ public class Callsign implements Serializable {
 	private static final long serialVersionUID = 1L;
 	protected String callsign;
 	protected String ssid;
+        protected boolean last;
 
 	public Callsign(String call) {
 		String[] callssid = call.split("-");
@@ -48,6 +49,7 @@ public class Callsign implements Serializable {
 		for (int i = 0; i < 6; i++)
 			shifted[i] = (byte)((data[offset + i]&0xff) >> 1);
 		this.callsign = new String(shifted, 0, 6).trim();
+                last = ((ssidbyte & 0x01) == 1);
 		int ssidval = (ssidbyte & 0x1e) >> 1;
 		if (ssidval != 0)
 			this.ssid = "" + ssidval;
@@ -104,7 +106,16 @@ public class Callsign implements Serializable {
 		// we ignore that for now.
 	}
 	// ssid byte: u11ssss0
-	ax25[6] = (byte) (0x60 | ((ssidval*2) & 0x1e));
+	ax25[6] = (byte) ((ssidval << 1) | (0x60) | (last ? 0x01 : 0));
 	return ax25;
     }
+
+    public boolean isLast() {
+        return last;
+    }
+
+    public void setLast(boolean last) {
+        this.last = last;
+    }
+    
 }
