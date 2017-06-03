@@ -60,7 +60,7 @@ intending to transmit should utilize their callsign as username, with or without
 
 Once connected, users can join one or several of the pre-populated channels :
 
-* #APRS - displays all received APRS packets in decoded form. Posting to channel has no effect.
+* #APRS - displays all received APRS packets in decoded form. Posting to channel transmits APRS Position with entered message being the comment.
 * #APRS-RAW - displays received APRS packets in raw form. Posting to channel has no effect.
 * #APRS-CHAT - channel will display APRS Message packets when target call sign is 1 character long.
 Posting to channel will transmit APRS Message to target call sign "A".
