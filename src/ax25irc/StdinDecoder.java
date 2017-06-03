@@ -63,6 +63,7 @@ public class StdinDecoder extends PacketModem {
         }
     }
 
+    @Override
     public void run() {
 
         System.out.println("processing input from STDIN");

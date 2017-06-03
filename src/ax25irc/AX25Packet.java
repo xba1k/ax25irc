@@ -6,7 +6,7 @@ public class AX25Packet {
     
     Packet frame;
     
-    enum PacketType {
+    public enum PacketType {
         
         OTHER,
         APRS,

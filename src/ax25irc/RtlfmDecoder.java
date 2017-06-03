@@ -69,13 +69,14 @@ public class RtlfmDecoder extends PacketModem {
         }
     }
 
+    @Override
     public void run() {
 
         System.out.println("processing input from: " + CMD);
 
         try {
 
-            Process p = null;
+            Process p;
             
             if(OS_NAME.contains("win")) {
 

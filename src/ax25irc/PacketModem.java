@@ -13,11 +13,12 @@ public class PacketModem extends Thread implements PacketHandler {
         this.listener = listener;
     }
 
+    @Override
     public void handlePacket(byte[] packet) {
-
+        
         Packet pkt = new Packet(packet);
         pkt.parse();
-
+        
         if (pkt.payload[0] == '^') {
 
             switch (pkt.payload[1]) {
@@ -34,7 +35,7 @@ public class PacketModem extends Thread implements PacketHandler {
 
         } else {
 
-            APRSPacket pkt2 = null;
+            APRSPacket pkt2;
 
             try {
 

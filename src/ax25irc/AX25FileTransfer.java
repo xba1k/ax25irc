@@ -4,7 +4,7 @@ import ax25irc.ax25modem.sivantoledo.ax25.Packet;
 
 public class AX25FileTransfer extends AX25Packet {
     
-    enum TransferState {
+    public enum TransferState {
         
         HEADER,
         DATA

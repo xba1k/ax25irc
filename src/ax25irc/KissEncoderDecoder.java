@@ -23,6 +23,7 @@ public class KissEncoderDecoder extends PacketModem implements KissFrameListener
 
     }
 
+    @Override
     public void frameReceived(KissFrame frame) {
 
         if (frame.getType() == KissFrame.FrameType.DATA) {
@@ -37,6 +38,7 @@ public class KissEncoderDecoder extends PacketModem implements KissFrameListener
 
     }
 
+    @Override
     public void sendPacket(byte[] packet) {
 
         if (mobilinkdTnc != null) {
@@ -82,6 +84,7 @@ public class KissEncoderDecoder extends PacketModem implements KissFrameListener
         }
     }
 
+    @Override
     public void run() {
 
         System.out.println("processing input from KISS TNC at " + portName);

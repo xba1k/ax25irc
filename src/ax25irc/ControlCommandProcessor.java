@@ -1,6 +1,5 @@
 package ax25irc;
 
-import ax25irc.ircd.server.IRCServer;
 import ax25irc.ircd.server.MessageListener;
 import ax25irc.ircd.server.ServMessage;
 import java.util.Arrays;
@@ -13,6 +12,7 @@ public class ControlCommandProcessor implements MessageListener {
         this.service = service;
     }
 
+    @Override
     public void onMessage(ServMessage message) {
 
         String params[] = message.getText().split(" ");

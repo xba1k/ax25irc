@@ -14,13 +14,13 @@ public class VirtualConnection extends Connection {
         this.m_nick = nick;
         this.m_host = InetAddress.getLoopbackAddress();
         this.m_user = new UserInfo(nick, host, nick, nick);
-	this.listener = listener;
     }
     
     public void setListener(MessageListener listener) {
         this.listener = listener;
     }
     
+    @Override
     public void sendMsgAndFlush(ServMessage message) {
         
         if(listener!=null) {
@@ -29,6 +29,7 @@ public class VirtualConnection extends Connection {
         
     }
     
+    @Override
     public void sendMsg(ServMessage message) {
         
         if(listener!=null) {

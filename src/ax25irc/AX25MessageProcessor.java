@@ -1,7 +1,5 @@
 package ax25irc;
 
-import ax25irc.aprs.parser.APRSTypes;
-import ax25irc.aprs.parser.Parser;
 import ax25irc.ax25modem.sivantoledo.ax25.Packet;
 import ax25irc.ircd.server.Channel;
 import ax25irc.ircd.server.Client;
@@ -99,6 +97,7 @@ public class AX25MessageProcessor implements MessageListener {
 
     }
 
+    @Override
     public void onMessage(ServMessage message) {
 
         if (message.getConnection() != null && !(message.getConnection() instanceof VirtualConnection)) {

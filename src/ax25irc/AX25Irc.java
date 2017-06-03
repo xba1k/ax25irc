@@ -25,10 +25,8 @@ public class AX25Irc extends Thread implements AX25PacketListener, MessageListen
     };
 
     public static enum MessageMode {
-
         APRS,
         AX25
-
     };
 
     MessageMode messageMode;
@@ -69,6 +67,7 @@ public class AX25Irc extends Thread implements AX25PacketListener, MessageListen
         return messageMode;
     }
 
+    @Override
     public void onPacket(AX25Packet packet) {
 
         switch (packet.getType()) {
@@ -94,10 +93,12 @@ public class AX25Irc extends Thread implements AX25PacketListener, MessageListen
         return server;
     }
 
+    @Override
     public void onClient(Client client) {
         client.addListener(this);
     }
 
+    @Override
     public void onMessage(ServMessage message) {
 
         String dest = message.getParameters().get(0);
@@ -133,17 +134,19 @@ public class AX25Irc extends Thread implements AX25PacketListener, MessageListen
         ax25MessageProcessor = new AX25MessageProcessor(server, modem);
         commandProcessor = new ControlCommandProcessor(this);
 
-        server.addChannel("#APRS", new Channel(server, "#APRS", "", "Channel for decoded APRS packets. Read-only.", 0));
         server.addChannel("#APRS-RAW", new Channel(server, "#APRS-RAW", "", "Channel for unparsed APRS packets. Read-only.", 0));
 
+        Channel aprs = new Channel(server, "#APRS", "", "Channel for decoded APRS packets.", 43);
         Channel aprsChat = new Channel(server, "#APRS-CHAT", "", "APRS messaging channel. Limited to 67 characters.", 67);
         Channel ax25Chat = new Channel(server, "#AX25-CHAT", "", "AX25 messaging channel. Limited to 254 characters.", 254);
         Channel controlChat = new Channel(server, "#CONTROL", "", "Control interface to the service. Type HELP.", 0);
 
         aprsChat.addListener(aprsMessageProcessor);
+        aprs.addListener(aprsMessageProcessor);
         ax25Chat.addListener(ax25MessageProcessor);
         controlChat.addListener(commandProcessor);
 
+        server.addChannel("#APRS", aprs);
         server.addChannel("#APRS-CHAT", aprsChat);
         server.addChannel("#AX25-CHAT", ax25Chat);
         server.addChannel("#CONTROL", controlChat);
@@ -173,6 +176,7 @@ public class AX25Irc extends Thread implements AX25PacketListener, MessageListen
 
     }
 
+    @Override
     public void run() {
         modem.start();
         server.run();

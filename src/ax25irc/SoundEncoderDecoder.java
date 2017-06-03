@@ -52,13 +52,15 @@ public class SoundEncoderDecoder extends PacketModem {
         while (!interrupted()) {
 
             Packet p = null;
-            
-            try { 
+
+            try {
                 p = pendingPackets.take();
-            } catch(InterruptedException ex) {}
-            
-            if(p == null)
+            } catch (InterruptedException ex) {
+            }
+
+            if (p == null) {
                 continue;
+            }
 
             while (demodulator.dcd()) {
                 yield();
@@ -97,15 +99,21 @@ public class SoundEncoderDecoder extends PacketModem {
 
     }
 
+    @Override
     public void run() {
+
+        Soundcard.enumerate();
 
         System.out.println("processing input/output on default mixer ");
         setupSoundCard();
 
-        soundcard.enumerate();
-        
-        new Thread() { public void run() { sendPacketLoop(); } }.start();
-        
+        new Thread() {
+            @Override
+            public void run() {
+                sendPacketLoop();
+            }
+        }.start();
+
         soundcard.receive();
 
     }

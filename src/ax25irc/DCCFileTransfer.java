@@ -101,6 +101,7 @@ public class DCCFileTransfer extends Thread {
         return "DCCFileTransfer{" + "dest=" + dest + ", filename=" + filename + ", ip=" + ip + ", port=" + port + ", size=" + size + '}';
     }
 
+    @Override
     public void run() {
 
         if (senderMode) {
