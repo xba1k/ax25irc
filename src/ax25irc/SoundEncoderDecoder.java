@@ -9,6 +9,7 @@ import ax25irc.ax25modem.sivantoledo.soundcard.SoundcardConsumer;
 import ax25irc.ax25modem.sivantoledo.soundcard.SoundcardProducer;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class SoundEncoderDecoder extends PacketModem {
 
@@ -20,52 +21,66 @@ public class SoundEncoderDecoder extends PacketModem {
     Soundcard soundcard;
     Afsk1200Modulator modulator;
     PacketDemodulator demodulator;
-    
+
     String soundDeviceName;
 
     int rate = 22050;
     int latency_ms = 100;
-    int TXDelay = 50; 
+    int TXDelay = 50;
     int Persist = 63;
     int SlotTime = 10;
     int FullDuplex = 0;
     int TXTail = 10;
 
+    LinkedBlockingQueue<Packet> pendingPackets;
+
     public SoundEncoderDecoder(AX25PacketListener listener, String soundDeviceName) {
 
         super(listener);
-        
+
         this.soundDeviceName = soundDeviceName;
-
-    }
-
-    public void sendPacketNow(byte[] packet) {
-
-        modulator.prepareToTransmit(new Packet(packet));
-        soundcard.transmit();
+        pendingPackets = new LinkedBlockingQueue<>();
 
     }
 
     public void sendPacket(byte[] packet) {
+        pendingPackets.offer(new Packet(packet));
+    }
 
-        while (demodulator.dcd()) {
-            yield();
-        }
+    public void sendPacketLoop() {
 
-        while (Math.random() > Persist) {
+        while (!interrupted()) {
 
-            try {
-                Thread.sleep(10 * SlotTime);
-            } catch (InterruptedException ie) {
-            }
+            Packet p = null;
+            
+            try { 
+                p = pendingPackets.take();
+            } catch(InterruptedException ex) {}
+            
+            if(p == null)
+                continue;
 
             while (demodulator.dcd()) {
-                yield(); // wait for a channel that is not busy
+                yield();
             }
 
-        }
+            while (Math.random() > Persist) {
 
-        sendPacketNow(packet);
+                try {
+                    Thread.sleep(10 * SlotTime);
+                } catch (InterruptedException ie) {
+                }
+
+                while (demodulator.dcd()) {
+                    yield(); // wait for a channel that is not busy
+                }
+
+            }
+
+            modulator.prepareToTransmit(p);
+            soundcard.transmit();
+
+        }
 
     }
 
@@ -78,7 +93,6 @@ public class SoundEncoderDecoder extends PacketModem {
             soundcard = new Soundcard(rate, soundDeviceName, soundDeviceName, latency_ms, demodulator, modulator);
         } catch (Exception e) {
             System.err.println("Afsk1200 constructor exception: " + e.getMessage());
-            System.exit(1);
         }
 
     }
@@ -89,6 +103,9 @@ public class SoundEncoderDecoder extends PacketModem {
         setupSoundCard();
 
         soundcard.enumerate();
+        
+        new Thread() { public void run() { sendPacketLoop(); } }.start();
+        
         soundcard.receive();
 
     }
